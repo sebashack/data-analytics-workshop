@@ -8,22 +8,17 @@ from pyspark.ml.feature import CountVectorizer, IDF
 from pyspark.ml import Pipeline, PipelineModel
 
 
-dataset_path = (
-    "/home/sebastian/Downloads/workshop2/climateTwitterData.csv/climateTwitterData.csv"
-)
-
-nlp = spacy.load("en_core_web_sm")
-
-
-def tokenize_tweet(tweet):
-    doc = nlp(tweet.lower())
+def tokenize_tweet(tweet, spacy_nlp):
+    doc = spacy_nlp(tweet.lower())
     return [token.lemma_ for token in doc if not token.is_stop and token.is_alpha]
 
 
-def tokenize_dataset(df):
+def tokenize_dataset(df, spacy_nlp):
     tweets_df = df.select("text")
 
-    tokenize_tweet_udf = udf(tokenize_tweet, ArrayType(StringType()))
+    tokenize_tweet_udf = udf(
+        lambda s: tokenize_tweet(s, spacy_nlp), ArrayType(StringType())
+    )
     tweets_df = df.select("text")
     tokenized_df = tweets_df.withColumn("tokenized_text", tokenize_tweet_udf("text"))
 
@@ -54,11 +49,20 @@ def model_to_tf_idf(model, tokenized_df):
     return vocabulary, tfidf_df
 
 
+def load_tf_idf_model(path):
+    model = PipelineModel.load(path)
+
+    return model
+
+
 def main(argv):
+    dataset_path = "/home/sebastian/Downloads/workshop2/climateTwitterData.csv/climateTwitterData.csv"
+    spacy_nlp = spacy.load("en_core_web_sm")
     spark = SparkSession.builder.master("local[*]").getOrCreate()
+
     df = spark.read.csv(dataset_path, header=True, inferSchema=True)
 
-    tokenized_df = tokenize_dataset(df)
+    tokenized_df = tokenize_dataset(df, spacy_nlp)
 
     # tokenized_df.select("tokenized_text").show(10, truncate=False)
 
@@ -66,7 +70,7 @@ def main(argv):
 
     # model.save(f"./{str(uuid.uuid4())}")
 
-    model = PipelineModel.load("./4d56eb56-84f4-46fe-a505-44d0c4cd3ffa")
+    model = load_tf_idf_model("./4d56eb56-84f4-46fe-a505-44d0c4cd3ffa")
 
     vocabulary, tfidf_df = model_to_tf_idf(model, tokenized_df)
 
