@@ -1,7 +1,34 @@
+import uuid
 from pyspark.sql.functions import udf
 from pyspark.sql.types import ArrayType, StringType
 from pyspark.ml.feature import CountVectorizer, IDF
 from pyspark.ml import Pipeline, PipelineModel
+
+
+def tf_idf_pipeline(spacy_nlp, df):
+    tokenized_df = tokenize_dataset(df, spacy_nlp)
+
+    tokenized_df.select("tokenized_text").show(10, truncate=False)
+
+    model = compute_tf_idf_model(tokenized_df, vocab_size=20)
+
+    model.save(f"./{str(uuid.uuid4())}")
+
+    vocabulary, tfidf_df = model_to_tf_idf(model, tokenized_df)
+
+    print(vocabulary)
+    tfidf_df.select("tfidf_features").show(10, truncate=False)
+
+
+def tf_idf_pipeline_with_saved_model(model_dir_path, spacy_nlp, df):
+    tokenized_df = tokenize_dataset(df, spacy_nlp)
+
+    model = load_tf_idf_model(model_dir_path)
+
+    vocabulary, tfidf_df = model_to_tf_idf(model, tokenized_df)
+
+    print(vocabulary)
+    tfidf_df.select("tfidf_features").show(10, truncate=False)
 
 
 def tokenize_tweet(tweet, spacy_nlp):
