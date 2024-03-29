@@ -1,4 +1,7 @@
-pyspark==3.5.1
-spark-nlp==5.3.2
+chromadb==0.4.24
 nltk==3.8.1
+pandas==2.2.1
+pyspark==3.5.1
+retry==0.9.2
 spacy==3.7.4
+spark-nlp==5.3.2
