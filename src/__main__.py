@@ -1,7 +1,9 @@
+from datetime import datetime
 import os
 import sys
 import spacy
 from pyspark.sql import SparkSession
+import pyLDAvis.gensim_models
 
 from tf_idf import (
     tf_idf_pipeline_with_saved_model,
@@ -36,13 +38,42 @@ def pipeline2(df):
 
 def pipeline3(df):
     spacy_nlp = spacy.load("en_core_web_sm")
-    lda_model = topic_modelling_pipeline(spacy_nlp, df, 5, 0.5, 1000, 3, 10, 10)
-    lda_model.print_topics(-1)
-    # lda_model, k_optimal = get_model_lda_and_k_optimal(spacy_nlp, df,  5, 0.5, 1000, 3, 10, 10, 'u_mass')
+    lda_model, corpus, dictionary = topic_modelling_pipeline(
+        spacy_nlp,
+        df,
+        no_below=5,
+        no_above=0.5,
+        keep_n=600,
+        workers=13,
+        lda_iters=100,
+        passes=10,
+        num_topics=10,
+    )
+
+    utc_datetime = datetime.utcnow()
+    utc_datetime_str = utc_datetime.strftime("%Y-%m-%d_%H-%M-%S")
+
+    lda_display = pyLDAvis.gensim_models.prepare(lda_model, corpus, dictionary)
+    pyLDAvis.save_html(lda_display, f"lda_report__{utc_datetime_str}.html")
+
+    # k = get_model_lda_and_k_optimal(
+    #     spacy_nlp,
+    #     df,
+    #     no_below=5,
+    #     no_above=0.5,
+    #     keep_n=500,
+    #     workers=13,
+    #     iterations=50,
+    #     passes=10,
+    #     max_topics=10,
+    #     type_coherence="u_mass",
+    # )
+
+    # print(k)
 
 
 def main():
-    dataset_path = "/home/nerthust/Downloads/climateTwitterData.csv"
+    dataset_path = "/home/sebastian/Downloads/workshop2/climateTwitterData.csv/climateTwitterData.csv"
     spark = SparkSession.builder.master("local[*]").getOrCreate()
     spark.sparkContext.addPyFile(f"{os.getcwd()}/src/tf_idf.py")
 
