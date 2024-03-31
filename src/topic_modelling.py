@@ -14,7 +14,7 @@ def get_dictionary_from_tokens(tokens, no_below, no_above, keep_n):
 
 
 def tolist(tokenized_df):
-    return tokenized_df.select("tokenized_text").rdd.flatMap(lambda row: row).collect()
+    return [row["tokenized_text"] for row in tokenized_df.collect()]
 
 
 def compute_topic_modelling(corpus, dictionary, num_topics, workers, passes):
