@@ -18,6 +18,7 @@ from topic_modelling import (
     get_model_lda_and_k_optimal,
 )
 
+
 def pipeline1(df):
     spacy_nlp = spacy.load("en_core_web_sm")
     # tf_idf_pipeline(spacy_nlp, df)
@@ -31,6 +32,7 @@ def pipeline2(df):
     # embeddings_pipeline_with_saved_response(
     #     df, 3000, "embeddings__2024-03-29_22-02-54.json", "./chromadb"
     # )
+
 
 def pipeline3(df):
     spacy_nlp = spacy.load("en_core_web_sm")
