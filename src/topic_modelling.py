@@ -19,13 +19,14 @@ def topic_modelling_pipeline(
     coherence_c_v = get_coherence(lda_model, corpus, dictionary, "c_v", tokens)
     print("Coherence_u_mass: ", coherence_u_mass)
     print("Coherence_c_v: ", coherence_c_v)
+
     return lda_model
-    # print(lda_model[corpus][0])
 
 
 def get_dictionary_from_tokens(tokens, no_below, no_above, keep_n):
     dictionary = Dictionary(tokens)
     dictionary.filter_extremes(no_below=no_below, no_above=no_above, keep_n=keep_n)
+
     return dictionary
 
 
@@ -78,6 +79,7 @@ def get_model_lda_and_k_optimal(
         score.append(coherence)
 
     idx_max_coherence = score.index(max(score))
+
     return lda_model, topics[idx_max_coherence]
 
 
@@ -98,4 +100,5 @@ def get_coherence(lda_model, corpus, dictionary, type_coherence, tokens):
             dictionary=dictionary,
             coherence="c_v",
         )
+
     return cm.get_coherence()
