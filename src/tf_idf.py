@@ -32,8 +32,24 @@ def tf_idf_pipeline_with_saved_model(model_dir_path, spacy_nlp, df):
 
 
 def tokenize_tweet(tweet, spacy_nlp):
+    removal = [
+        "ADV",
+        "PRON",
+        "CCONJ",
+        "PUNCT",
+        "PART",
+        "DET",
+        "ADP",
+        "SPACE",
+        "NUM",
+        "SYM",
+    ]
     doc = spacy_nlp(tweet.lower())
-    return [token.lemma_ for token in doc if not token.is_stop and token.is_alpha]
+    return [
+        token.lemma_
+        for token in doc
+        if token.pos_ not in removal and not token.is_stop and token.is_alpha
+    ]
 
 
 def tokenize_dataset(df, spacy_nlp):
