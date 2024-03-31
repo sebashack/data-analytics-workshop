@@ -13,7 +13,7 @@ def get_dictionary_from_tokens(tokens, no_below, no_above, keep_n):
     return dictionary
 
 
-def tolist(tokenized_df):
+def tokenized_tweets_to_list(tokenized_df):
     return [row["tokenized_text"] for row in tokenized_df.collect()]
 
 
@@ -40,7 +40,7 @@ def get_model_lda_and_k_optimal(
     type_coherence,
 ):
     tokenized_df = tokenize_dataset(df, spacy_nlp)
-    tokens = tolist(tokenized_df)
+    tokens = tokenized_tweets_to_list(tokenized_df)
     dictionary = get_dictionary_from_tokens(tokens, no_below, no_above, keep_n)
     corpus = [dictionary.doc2bow(doc) for doc in tokens]
 
@@ -89,7 +89,7 @@ def topic_modelling_pipeline(
     spacy_nlp, df, no_below, no_above, keep_n, workers, passes, num_topics
 ):
     tokenized_df = tokenize_dataset(df, spacy_nlp)
-    tokens = tolist(tokenized_df)
+    tokens = tokenized_tweets_to_list(tokenized_df)
     dictionary = get_dictionary_from_tokens(tokens, no_below, no_above, keep_n)
     corpus = [dictionary.doc2bow(doc) for doc in tokens]
     lda_model = compute_topic_modelling(corpus, dictionary, num_topics, workers, passes)
