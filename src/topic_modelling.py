@@ -14,7 +14,7 @@ def topic_modelling_pipeline(
     tokens = tokenized_tweets_to_list(tokenized_df)
     dictionary = get_dictionary_from_tokens(tokens, no_below, no_above, keep_n)
     corpus = [dictionary.doc2bow(doc) for doc in tokens]
-    lda_model = compute_topic_modelling(corpus, dictionary, num_topics, workers, passes)
+    lda_model = compute_topic_model(corpus, dictionary, num_topics, workers, passes)
     coherence_u_mass = get_coherence(lda_model, corpus, dictionary, "u_mass", tokens)
     coherence_c_v = get_coherence(lda_model, corpus, dictionary, "c_v", tokens)
     print("Coherence_u_mass: ", coherence_u_mass)
@@ -34,7 +34,7 @@ def tokenized_tweets_to_list(tokenized_df):
     return [row["tokenized_text"] for row in tokenized_df.collect()]
 
 
-def compute_topic_modelling(corpus, dictionary, num_topics, workers, passes):
+def compute_topic_model(corpus, dictionary, num_topics, workers, passes):
     return LdaMulticore(
         corpus=corpus,
         id2word=dictionary,
