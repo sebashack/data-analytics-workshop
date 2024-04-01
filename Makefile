@@ -6,6 +6,7 @@ venv:
 	python3 -m venv venv
 	${pip_bin} install -r requirements.txt
 	${py_bin} -m spacy download en_core_web_sm
+	${pip_bin} install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
 
 .PHONY: clean
 clean:
