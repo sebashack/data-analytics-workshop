@@ -21,6 +21,7 @@ from topic_modelling import (
 )
 
 from sentiment_analysis import sentiment_analysis_pipeline
+from classification_analysis import classification_pipeline
 
 
 def pipeline1(df):
@@ -79,6 +80,11 @@ def pipeline4(df):
     sentiment_analysis_pipeline(df, spacy_nlp)
 
 
+def pipeline5(df):
+    spacy_nlp = spacy.load("en_core_web_sm")
+    classification_pipeline(df, spacy_nlp)
+
+
 def main():
     dataset_path = "/home/sebastian/Downloads/workshop2/climateTwitterData.csv/climateTwitterData.csv"
     spark = SparkSession.builder.master("local[*]").getOrCreate()
@@ -89,7 +95,8 @@ def main():
     # pipeline1(df)
     # pipeline2(df)
     # pipeline3(df)
-    pipeline4(df)
+    # pipeline4(df)
+    pipeline5(df)
 
 
 if __name__ == "__main__":
