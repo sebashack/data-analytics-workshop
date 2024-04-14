@@ -1,15 +1,14 @@
 import sys
 
 from menu import (
-    show_menu,
+    choose_operation,
+    create_parser,
 )
 
 def main():
-    while True:
-        print("####### Welcome #######\n")
-        show_menu()
-    
-
+    parser = create_parser()
+    args = parser.parse_args()
+    choose_operation(args)
 
 if __name__ == "__main__":
     sys.exit(main())
