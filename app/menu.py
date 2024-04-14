@@ -30,7 +30,6 @@ def create_parser():
     return parser
 
 def print_collection(result):
-    print("###########################\n")
     for idx in range(0, len(result)):
         print(f"ID: {result['ids'][0][idx]}, Document: {result['documents'][0][idx]}, Distance: {result['distances'][0][idx]}")
         print("###########################\n")
@@ -61,7 +60,6 @@ def choose_operation(args):
 
         tweets = query(collection, args.s, args.t, n_tweets)
 
-        print("hola", args.sv)
         if args.sv:
             save_result(tweets)
         else:
