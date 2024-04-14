@@ -21,7 +21,7 @@ def create_parser():
     parser.add_argument('-sv', help='save tweets in ./output', action='store_true')
 
     #Variables
-    parser.add_argument('-p', help='path in your local machine: --p <chromadb_path> <collection_name> <save_path>', type=str, nargs='+')
+    parser.add_argument('-p', help='path in your local machine: --p <chromadb_path> <collection_name>', type=str, nargs='+')
     parser.add_argument('-i', help='get tweets by ids (None show all tweets)', type=str, nargs='*')
     parser.add_argument('-t', help='token authentication for https://huggingface.co/join', type=str)
     parser.add_argument('-s', help='text to search', type=str)
